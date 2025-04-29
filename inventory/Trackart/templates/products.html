@@ -1,0 +1,614 @@
+
+{% extends 'basee.html' %}   
+{% load static %}
+ {% block title_block %}
+    <title>products/page</title>
+ {% endblock %}
+
+ {% block style_block %}
+    
+ <style>
+     *{
+         margin: 0;
+         padding: 0%;
+
+    }
+    body{
+        height: 100vh;
+    }
+   
+
+.card-title {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0;
+    display: inline-block;
+    padding-bottom: 2px; 
+    transition: border-bottom 0.3s ease; 
+    border-bottom: 2px solid transparent; 
+}
+
+.furniture-grid-label:hover {
+    border-bottom-color: #333;
+}
+
+.sidebar-link {
+    color: #333;
+    
+    display: block;
+    /* transition: all 0.3s; */
+    text-decoration: none;
+    border-bottom: 2px solid transparent; 
+    
+}
+
+.sidebar-link:hover {
+    
+    text-decoration:underline #333;
+    
+}
+
+    .sidebar-link:active {
+        background-color: #0e7deb;
+        font-weight: bold;}
+
+    
+        </style>
+        {% endblock %}
+
+{% block main_block %}
+<!-- create side bar -->
+<!-- Bootstrap Carousel with Top-Right Controls -->
+<!-- addproduct Modal -->
+
+
+<div class="modal fade" id="addproduct" tabindex="-1" role="dialog" aria-labelledby="addProductLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: rgb(14, 189, 247);">
+                <h5 class="modal-title" id="signupModalLabel" >Add a Product</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                
+                <form id="addProductForm" method="POST">
+                   {% csrf_token %}
+
+                    <div class="form-group">
+                        
+                        <label for="category"><i class="fa-solid fa-list"></i>&nbsp;Category</label>
+                        <select name="category" id="category">
+                            <option value="">Select Product Category</option>
+                            <option value="furniture">Furniture</option>
+                            <option value="tabletop_bar">Tabletop & Bar</option>
+                            <option value="kitchen">Kitchen</option>
+                            <option value="bedding">Bedding</option>
+                            <option value="bath">Bath</option>
+                            <option value="decor_pillow">Decor & Pillow</option>
+                            <option value="lighting">Lighting</option>
+                            <option value="window">Window</option>
+
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="sub-category"><i class="fa-solid fa-list"></i>&nbsp;Sub-Category</label>
+                        <select name="sub_category" id="sub-category">
+                            <option value="">Select Product Sub-Category</option>
+                            <optgroup label="Furniture">
+                                <option value="livingroom">Living Room</option>
+                                <option value="dining_room">Dining Room</option>
+                                <option value="bedroom">Bed Room</option>
+                                <option value="outdoor">Outdoor</option>
+                                <option value="home_office_furniture">Home Office Furniture</option>
+                                <option value="entry_way_furniture">Entry Way Furniture</option>
+
+                            </optgroup>
+
+                            <optgroup label="Tabletop & Bar">
+                                <option value="dinnerware">Dinnerware</option>
+                                <option value="serveware">Serveware</option>
+                                <option value="drinkware">Drinkware</option>
+                                <option value="bar_tools_accessories">Bar tools&accessories</option>
+                                <option value="table_linnens">Table linnens</option>
+                                
+
+                            </optgroup>
+
+                            <optgroup label="Kitchen">
+                                <option value="kitchen_appliences_electronics">Kitchen Appliences Electronics</option>
+                                <option value="coffee_espresso_tea">Coffee Espresso Tea</option>
+                                <option value="cookware_bakeware">Cookware Bakeware</option>
+                                <option value="cutlury_knive">Cutlury Knive</option>                             
+
+                            </optgroup>
+                            
+                            <optgroup label="Bedding">
+                                <option value="bedding_essentials">Bedding Essentials</option>
+                                
+                                
+                            </optgroup>
+                            
+
+                    <optgroup label="Bath">
+                        <option value="bath_linnens_towels">Bath Linnens Towels</option>
+                        <option value="bath_accessories_storage">Bath Accessories Storage</option>
+                        <option value="bath_hardware">Bath Hardware</option>
+                        <option value="bath_furniture">Bath Furniture</option>
+                        <option value="bath_sent">Bath Sent</option>
+                                                  
+
+                    </optgroup>
+                    <optgroup label="Decor & Pillow">
+                        <option value="pillows_cushions">Pillows&Cushions</option>
+                        <option value="wall_art_frames">Wall Art Frames</option>
+                        <option value="mirrors">Mirrors</option>
+                        <option value="botanicals_vases">Botanicals Vases</option>
+                        <option value="candles_fragrance">candles-fragrance</option>
+                        <option value="decorative_objects">Decorative Objects</option>
+                                                  
+
+                    </optgroup>
+                    <optgroup label="Lighting">
+                        <option value="ceiling_lights">Ceiling Lights</option>
+                        <option value="table_floor_lamps">Table Floor Lamps</option>
+                        <option value="wall_light_sconces">Wall Light Sconces</option>
+                        
+                                                  
+
+                    </optgroup>
+                    <optgroup label="Window">
+                        <option value="all_window_curtains">All Cindow Curtains</option>
+                        <option value="blackout_curtains">Blackout Curtains</option>
+                        <option value="sheer_curtains">Sheer Curtains</option>
+                        <option value="window_curtain_hardware">Window Curtain Hardware</option>
+                    </optgroup>
+
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="link"><i class="fa-solid fa-link"></i>&nbsp;Enter Url:</label>
+                        <input type="url" class="form-control" id="link" placeholder="Enter Image URL" name="image_link" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description"><i class="fa-solid fa-list"></i>&nbsp;Product Name:</label>
+                        <textarea name="description" id="description" placeholder="Enter Product Name Description"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="oprice"><i class="fa-solid fa-tag"></i>&nbsp;Enter Original Price:</label>
+                        <input type="number" class="form-control" id="oprice" name="original_price" required >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="sprice"><i class="fa-solid fa-tag"></i>&nbsp;Enter Offer Price:</label>
+                        <input type="number" class="form-control" id="sprice"  name="offer_price" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dprice"><i class="fa-solid fa-tag"></i>&nbsp;Enter Discount:</label>
+                        <input type="number" class="form-control" id="dprice"  name="discount" required>
+                    </div>
+                    
+                    
+                    
+                    <button type="submit" class="btn btn-primary">Submit</button>
+
+                    
+                </form>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+ <!-- createproduct Modal -->
+ <div class="modal fade" id="updateproduct" tabindex="-1" role="dialog" aria-labelledby="UpdateProductLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: rgb(14, 189, 247);">
+                <h5 class="modal-title" id="signupModalLabel" >Add a Product</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                
+                <form id="updateProductForm" method="POST">
+                   {% csrf_token %}
+                   
+                    <div class="form-group">
+
+                        <label for="category"><i class="fa-solid fa-list"></i>&nbsp;Category</label>
+                        <input type="text" class="form-control" id="category" placeholder="Enter Category" name="category" value="{{product_detail.category}}" required>
+
+                    </div>
+                    
+
+                    <div class="form-group">
+
+                        <label for="sub-category"><i class="fa-solid fa-list"></i>&nbsp;Sub-Category</label>
+                        <input type="text" class="form-control" id="sub-category" placeholder="Enter Sub Category" name="sub_category" required value="{{product_detail.sub_category}}">
+                       
+                    </div>
+                    <div class="form-group">
+                        <label for="link"><i class="fa-solid fa-link"></i>&nbsp;Enter Url:</label>
+                        <input type="url" class="form-control" id="link" placeholder="Enter Image URL" name="image_link" required value="{{product_detail.image_link}}">
+                    </div>
+                    <div class="form-group">
+                        <label for="description"><i class="fa-solid fa-list"></i>&nbsp;Description:</label>
+                        <input type="text" name="description" id="description" placeholder="Enter product description" value="{{product_detail.description}}"  class="form-control"></input>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="oprice"><i class="fa-solid fa-tag"></i>&nbsp;Enter Original Price:</label>
+                        <input type="number" class="form-control" id="oprice" name="original_price" required value="{{product_detail.original_price}}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="sprice"><i class="fa-solid fa-tag"></i>&nbsp;Enter Offer Price:</label>
+                        <input type="number" class="form-control" id="sprice"  name="offer_price" required value="{{product_detail.offer_price}}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dprice"><i class="fa-solid fa-tag"></i>&nbsp;Enter Discount:</label>
+                        <input type="number" class="form-control" id="dprice"  name="discount" required value="{{product_detail.discount}}">
+                    </div>
+                    
+                    
+                    
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    
+                    
+                </form>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<!-- end create products -->
+
+
+
+<div class="container-fluid" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar" style="min-height: 100vh;">
+            <div class="position-sticky pt-3">
+                <h5 class="px-3 mb-3" >Furniture</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="sidebar-link" href="{%url 'furniture'%}">
+                            View all Items
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'livingroom'%}">
+                            Living Room
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'diningroom'%}">
+                            Dining Room
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'bedroom'%}">
+                            Bedroom
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'outdoor'%}">
+                            Outdoor
+                        </a>
+                    </li>
+                  
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'home_office_furniture'%}">
+                            Home Office Furniture
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'entry_way_furniture'%}">
+                            Entryway Furniture
+                        </a>
+                    </li>
+                   
+                    
+                </ul>
+                <br>
+                <h5 class="px-3 mb-3">Tabletop & Bar</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="sidebar-link" href="{%url 'tabletop_bar' %}">
+                            View all Items
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'dinnerware' %}">
+                            Dinnerware
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'serveware' %}">
+                            Serveware
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'drinkware' %}">
+                            Drinkware
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'bar_tools_accessories' %}">
+                            Bar Tools & Accessories
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'table_linnens' %}">
+                            Table Linens
+                        </a>
+                    </li>
+                   
+                </ul><br>
+                <h5 class="px-3 mb-3">Kitchen</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="sidebar-link" href="{%url 'kitchen' %}">
+                            View all Items
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'kitchen_appliences_electronics' %}">
+                            Kitchen Applience & Electronics
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'coffee_espresso_tea' %}">
+                            Coffee,Espresso & Tea Machines
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'cookware_bakeware' %}">
+                            Cookware & Bakeware
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'cutlury_knive' %}">
+                            Cutlery & Knives
+                        </a>
+                    </li>
+                    
+                </ul><br>
+                <h5 class="px-3 mb-3">Bedding</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="sidebar-link" href="{%url 'bedding' %}">
+                            View all Items
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'bedding_essentials' %}">
+                           Bedding Essentials
+                        </a>
+                    </li>
+                 
+                </ul>
+                <br>
+                <h5 class="px-3 mb-3">Bath</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="sidebar-link" href="{%url 'Bath'%}">
+                            View all Items
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'bath_linnens_towels'%}">
+                           Bath Linens & Towels
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'bath_accessories_storage'%}">
+                            Bath Accessories & Storage
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'bath_hardware'%}">
+                            Bath Hardware
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'bath_furniture'%}">
+                            Bath Furniture
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'bath_sent'%}">
+                            Bath Sents
+                        </a>
+                    </li>
+                </ul>
+                <br>
+                <h5 class="px-3 mb-3">Decor & Pillow</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="sidebar-link" href="{%url 'Decor_Pillow'%}">
+                            View all Items
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'pillows_cushions'%}">
+                           Pillows & Cushions
+                        </a>
+                    </li>
+                  
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'mirrors'%}">
+                            Mirrors
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'botanicals_vases'%}">
+                            Botanicals & Vases
+                        </a>
+                    </li>
+                
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'decorative_objects'%}">
+                            Decorative Objects 
+                        </a>
+                    </li>
+                </ul>
+                <br>
+                <h5 class="px-3 mb-3">Lighting</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="sidebar-link" href="{%url 'lighting'%}">
+                            View all Items
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'ceiling_lights'%}">
+                           Ceiling Lights
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'table_floor_lamps'%}">
+                            Table & Floor Lamps
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'wall_light_sconces'%}">
+                            Wall Lights & Sconces
+                        </a>
+                    </li>
+                    
+                   
+                </ul>
+                <br>
+                <h5 class="px-3 mb-3">Window</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="sidebar-link" href="{%url 'window'%}">
+                            View all Items
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'all_window_curtains'%}">
+                            All Window Curtains
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'blackout_curtains'%}">
+                            Blackout Curtains
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'sheer_curtains'%}">
+                            Sheer Curtains
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link " href="{%url 'window_curtain_hardware'%}">
+                            Window Curtains Hardware
+                        </a>
+                    </li>
+                </ul>
+                <br>
+            </div>
+        </div>
+        
+
+        <!-- Main content -->
+        <div class="col-md-9 col-lg-10" >
+            {% if user_role == "staff" %}
+            <div class="text-end my-3 px-3">
+                <button type="button" class="btn btn-lg btn-outline-success shadow-sm px-4 py-2 rounded-pill fw-semibold" data-toggle="modal" data-target="#addproduct">
+                    <a href="{% url 'products' %}"></a><i class="fa-solid fa-plus me-2"></i> Add New Product
+                </button>
+            </div>
+            {% endif %}
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 px-3 py-2">
+                    
+                    
+                    <!-- loop start -->
+                    
+                    
+                    {% for item in products %}
+                        
+                    
+                    <div class="col d-flex">
+                        
+                        <div class="card mx-1 mb-3 shadow-sm" style="padding: 0; border-radius: 10px; height: 422px;width: 260px;">
+                         <div >
+                            
+                            <a href="{% url 'productdetail' product_id=item.id %}" style="text-decoration: none;" target="_blank">
+                                <img src="{{ item.image_link }}" class="card-img-top h-120  w-120" style="object-fit: fill; height: 250px; width: 260px;"  alt="...">
+                            </a>  
+                        </div>
+                            <div class="card-body">
+                                <div>
+                                <p class="card-text">{{ item.description }}
+                                </p>
+                            </div>
+                                <div style="color: black;text-align: center;">Price:<i class="fa-solid fa-indian-rupee-sign"></i>{{  item.offer_price }}&nbsp;
+                                    <span style="text-decoration: line-through; color: rgba(255, 0, 0, 0.575);font-weight: bold;"><i class="fa-solid fa-indian-rupee-sign " style="text-decoration: line-through; margin-bottom:5px !important;"></i>
+                                        {{ item.original_price }}</span></div>
+                                        
+                                    </div>
+
+
+
+                                    <div class="card-footer">
+                                        {% if user_role == "staff" %}
+                                        <div class="d-flex gap-2">
+                                            <button type="button" style="width: 50%;height: 20%;padding: 3%;" class="btn-outline-primary h-100" data-toggle="modal" data-target="#updateproduct">
+                                                <a href="{% url 'edit' product_id=item.id %}" style="color: darkblue;">
+                                                    
+                                                    <i class="fa-solid fa-pen-to-square me-2"></i>Edit
+                                                </a>
+                                                </button>
+                                            <a href="{% url 'delete' product_id=item.id %}" class="btn btn-outline-danger w-50 d-flex align-items-center justify-content-center" style="height: 45px;">
+                                                <i class="fa-solid fa-trash me-2"></i> Delete
+                                            </a>
+                                        </div>
+                                    
+                                        {% else %}
+                                        <div class="d-flex gap-2">
+                                            <a href="{% url 'product_cart' product_id=item.id %}" class="btn btn-outline-success w-50 d-flex align-items-center justify-content-center" style="height: 45px;">
+                                                <i class="fa-solid fa-cart-shopping me-2"></i> Cart
+                                            </a>
+                                            <a href="{% url 'wishlist' product_id=item.id %}" class="btn btn-outline-danger w-50 d-flex align-items-center justify-content-center" style="height: 45px;">
+                                                <i class="fa-regular fa-heart me-2"></i> Wishlist
+                                            </a>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                         
+                            </div>
+                            </div>
+                            
+                            
+                            {% endfor %}
+                                
+                                
+                                <!-- loop end -->
+                                
+                            </div>
+                           
+                        </div>
+
+
+
+            </div>
+        </div>
+  
+
+{% endblock %}
+
